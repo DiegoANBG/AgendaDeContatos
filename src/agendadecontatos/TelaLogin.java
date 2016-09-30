@@ -5,14 +5,22 @@
  */
 package agendadecontatos;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.swing.JOptionPane;
+import modelo.Usuarios;
+
 /**
  *
  * @author aluno
  */
 public class TelaLogin extends javax.swing.JDialog {
+
     private String usuario;
     private String nivel;
-    
+
     public String getUsuario() {
         return usuario;
     }
@@ -28,8 +36,7 @@ public class TelaLogin extends javax.swing.JDialog {
     public void setNivel(String nivel) {
         this.nivel = nivel;
     }
-   
-    
+
     /**
      * Creates new form TelaLogin
      */
@@ -139,15 +146,41 @@ public class TelaLogin extends javax.swing.JDialog {
     }//GEN-LAST:event_txtSenhaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose();
+        
+        setUsuario("");
+        setNivel("");
+        this.setVisible(false);
+        
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (txtUsuario.getText().equals("DiegoANBG")){
-            setUsuario(txtUsuario.getText());
-            setNivel("Administrador");
-        }
+        
+      EntityManagerFactory factory = Persistence.createEntityManagerFactory( "AgendaDeContatosPU" );
+      EntityManager manager = factory.createEntityManager();
+
+      Query query = manager.createNamedQuery( "Usuarios.findByUsuarioESenha" );
+      query.setParameter("usuario", txtUsuario.getText());
+      query.setParameter("senha", txtSenha.getText());
+
+      List<Usuarios> usuario = query.getResultList();
+
+      if (!usuario.isEmpty()) {
+
+        setNomeUsuario(usuario.get(0).getUsuario());
+        setNivelUsuario(usuario.get(0).getNivel());
+        setTemaUsuario(usuario.get(0).getTema());
+
+        manager.close();
+
         this.setVisible(false);
+        
+      } else {
+        
+        JOptionPane.showMessageDialog(null, "Usuário e/ou senha incorretos.",
+                "Atenção", JOptionPane.ERROR_MESSAGE);
+
+      }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

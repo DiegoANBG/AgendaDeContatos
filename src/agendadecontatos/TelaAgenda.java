@@ -62,6 +62,11 @@ public class TelaAgenda extends javax.swing.JFrame {
         mnuWindows = new javax.swing.JCheckBoxMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Resources/agenda.png"))); // NOI18N
@@ -249,6 +254,30 @@ public class TelaAgenda extends javax.swing.JFrame {
          mudaLaF("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
     }//GEN-LAST:event_mnuWindowsActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        TelaLogin telaLogin = new TelaLogin(this, true);
+        telaLogin.setVisible(true);
+        
+        lblUsuario.setText(telaLogin.getUsuario());
+        lblNivel.setText(telaLogin.getNivel());
+        
+        if (lblUsuario.getText().trim().isEmpty()){
+            System.exit(0);
+        }    
+        
+        lblSO.setText(descobreSO());
+        
+        telaLogin.dispose();
+                
+    }//GEN-LAST:event_formWindowOpened
+    
+    private String descobreSO(){
+        String soNome = "";
+        soNome = System.getProperty("os.name");
+        
+        return soNome;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -283,7 +312,9 @@ public class TelaAgenda extends javax.swing.JFrame {
             }
         });
     }
-
+    /*
+    Muda o look and feel da aplicação
+    */
     private void mudaLaF(String temaLaF){
         try{
             UIManager.setLookAndFeel(temaLaF);
